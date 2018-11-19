@@ -9,10 +9,25 @@ public class App extends Application {
     private static App instance;
     private static ServerAPI serverAPI;
 
+    public App() {
+        instance = this;
+        serverAPI = new RestAdapter.Builder()
+                .setEndpoint(ServerAPI.ENDPOINT)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLog(new RestAdapter.Log() {
+                    @Override
+                    public void log(String message) {
+                        Log.v("Retrofit", message);
+                    }
+                })
+                .build().create(ServerAPI.class);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.d("App Create","enter ok");
+        instance = this;
         serverAPI = new RestAdapter.Builder()
                 .setEndpoint(ServerAPI.ENDPOINT)
                 .setLogLevel(RestAdapter.LogLevel.FULL)

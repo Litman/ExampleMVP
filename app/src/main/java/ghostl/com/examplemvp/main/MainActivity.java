@@ -1,7 +1,9 @@
 package ghostl.com.examplemvp.main;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -15,7 +17,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     public static final String DEFAULT_NAME = "Chuck Norris";
 
     private ArrayAdapter<ServerAPI.Item> adapter;
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void requestItems(String name){
         unsubscribe();
+        App app = new App();
+        Log.d("App", app.toString());
         subscription = App.getServerAPI()
                 .getItems(name.split("\\s+")[0], name.split("\\s+")[1])
                 .delay(1, TimeUnit.SECONDS)
@@ -53,6 +57,23 @@ public class MainActivity extends AppCompatActivity {
                         onItemsError(throwable);
                     }
                 });
+
+
+        /*subscription = app.getServerAPI()
+                .getItems(name.split("\\s+")[0], name.split("\\s+")[1])
+                .delay(1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ServerAPI.Response>() {
+                    @Override
+                    public void call(ServerAPI.Response response) {
+                        onItemsNext(response.items);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable error) {
+                        onItemsError(error);
+                    }
+                });*/
     }
 
     private void onItemsNext(ServerAPI.Item[] items) {
